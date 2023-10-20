@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+/* LOGIN */
+/*login button*/
+.maroon-button {
+  background-color: #480f0f;
+  color: white;
+}
+
+.maroon-button:hover {
+  background-color: #8a2222; /* Color de hover opcional */
+}
+
+/*sign up button*/
+.orange-button{
+  background-color: #c5893c;
+  color: white;
+}
+
+.orange-button:hover {
+  background-color: #e5af3b; /* Color de hover opcional */
+}

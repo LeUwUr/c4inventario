@@ -10,18 +10,18 @@ function LoginPage() {
           <img
             src="c4logo.jpg"
             alt="C4 Logo"
-            className="w-24 h-24 mb-4"
+            className="w-30 h-24 mb-4"
           />
         </div>
 
-        <h1 className="text-2xl font-semibold mb-4 text-center">
+        <h1 className="text-2xl font-bold text-amber-950 mb-4 text-center">
           Gestión de Inventarios
         </h1>
-        <h2 className="text-xl mb-4 text-center">Inicio de Sesión</h2>
+        <h2 className="text-xl font-bold text-yellow-500 mb-4 text-center">Inicio de Sesión</h2>
 
         {/* Email Input */}
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm mb-2" htmlFor="email">
+          <label className="block text-yellow-500 text-sm mb-2" htmlFor="email">
             Correo electrónico
           </label>
           <input
@@ -35,7 +35,7 @@ function LoginPage() {
         {/* Password Input */}
         <div className="mb-4">
           <label
-            className="block text-gray-700 text-sm mb-2"
+            className="block text-yellow-500 text-sm mb-2"
             htmlFor="password"
           >
             Contraseña
@@ -50,20 +50,22 @@ function LoginPage() {
 
         {/* Login Button */}
         <div className="mb-4">
-          <button className="w-full p-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 focus:outline-none">
-            Entrar
+          <Link to ="/inventory">
+        <button className="w-full p-2 maroon-button rounded-md hover:bg-maroon-800 focus:outline-none">
+            <strong>Entrar</strong>
           </button>
+          </Link>
         </div>
 
         {/* Google Login Button */}
         <div className="mb-4">
-          <button className="w-full p-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none">
+          <button className="w-full p-2 orange-button rounded-md hover:bg-yellow-600 focus:outline-none">
             <img
-              src="path_to_google_icon.png"
+              src="google-logo.png"
               alt="Google Icon"
               className="w-6 h-6 inline-block mr-2"
             />
-            Iniciar con Google
+            <strong>Iniciar con Google</strong>
           </button>
         </div>
 
@@ -71,8 +73,8 @@ function LoginPage() {
         <div className="text-center">
           <p className="text-sm">
             No tienes una cuenta?{" "}
-            <span className="text-purple-500 cursor-pointer">
-              <Link to="/registration">Registrate</Link>
+            <span className="text-amber-950 cursor-pointer">
+              <Link to="/registration"><strong>Registrate</strong></Link>
             </span>
           </p>
         </div>
