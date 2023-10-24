@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex justify-center items-center h-screen bg-gray-50">
       <div className="w-96 p-8 bg-white shadow-md rounded-lg">
         <div className="flex justify-center">
           {/* Logo */}
@@ -40,20 +46,42 @@ function LoginPage() {
           >
             Contraseña
           </label>
-          <input
-            className="w-full p-2 border rounded-md"
-            type="password"
-            id="password"
-            placeholder="********"
-          />
+          <div className="relative">
+            <input
+              className="w-full p-2 border rounded-md"
+              type={showPassword ? "text" : "password"}
+              id="password"
+              placeholder="********"
+            />
+            <span
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? (
+                <img
+                  src="view.png"
+                  alt="Mostrar Contraseña"
+                  width="20"
+                  height="20"
+                />
+              ) : (
+                <img
+                  src="hide.png"
+                  alt="Ocultar Contraseña"
+                  width="20"
+                  height="20"
+                />
+              )}
+            </span>
+          </div>
         </div>
 
         {/* Login Button */}
         <div className="mb-4">
-          <Link to ="/inventory">
-        <button className="w-full p-2 maroon-button rounded-md hover:bg-maroon-800 focus:outline-none">
-            <strong>Entrar</strong>
-          </button>
+          <Link to="/inventory">
+            <button className="w-full p-2 maroon-button rounded-md hover:bg-maroon-800 focus:outline-none">
+              <strong>Entrar</strong>
+            </button>
           </Link>
         </div>
 
@@ -74,7 +102,9 @@ function LoginPage() {
           <p className="text-sm">
             No tienes una cuenta?{" "}
             <span className="text-amber-950 cursor-pointer">
-              <Link to="/registration"><strong>Registrate</strong></Link>
+              <Link to="/registration">
+                <strong>Registrate</strong>
+              </Link>
             </span>
           </p>
         </div>
@@ -84,4 +114,5 @@ function LoginPage() {
 }
 
 export default LoginPage;
+
 
