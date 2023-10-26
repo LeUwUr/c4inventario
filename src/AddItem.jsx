@@ -1,10 +1,17 @@
 import React from "react";
+import Navbar from "./Navbar";
+
+import {IoMdAdd} from 'react-icons/io';
 
 const AddItem = () => {
   return (
-    <div className="p-6 w-full max-w-3xl mx-auto">
-      <h1 className="text-2xl mb-4 text-center font-bold">Agregar</h1>
-      <div className="grid grid-cols-3 gap-4">
+  
+    <div className="w-full py-0 max-w-3xl">
+      <Navbar>
+      <h1 className="text-2xl mb-1 text-center font-bold text-white">Agregar</h1>
+      </Navbar>
+      <div className="flex  place-content-center items-center w-screen ">
+      <div className="grid grid-cols-3 gap-4 items-center">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             UPC
@@ -72,10 +79,11 @@ const AddItem = () => {
           </select>
         </div>
         <div className="col-span-3 text-right">
-          <button className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">
+          <button style={{ width: "32%" }} className="px-3 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">
             Agregar
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

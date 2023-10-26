@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from 'react-router-dom';
+
 import { CgAdd } from 'react-icons/cg';
 import { AiFillBell } from 'react-icons/ai';
 import { BiSolidUser } from 'react-icons/bi';
@@ -46,10 +48,14 @@ function InventoryTable() {
             />
           </div>
           <div className="flex items-center space-x-6 mr-20">
+            <Link to='/agregar'>
             <CgAdd alt='Agregar' className="text-white w-10 h-10" />
+            </Link>
             <AiFillBell alt='Notificaciones' className="text-white w-10 h-10" />
             <BiSolidUser alt='Usuario' className="text-white w-10 h-10" />
+            <Link to='/login'>
             <RxExit alt='Cerrar sesion' className="text-white w-10 h-10" />
+            </Link>
           </div>
         </div>
       </nav>
@@ -87,7 +93,7 @@ function InventoryTable() {
                 <button className="bg-sky-400 text-white px-4 py-2 mr-2 rounded">
                   Actualizar
                 </button>{" "}
-                <button className="bg-red-800 text-white px-4 py-2 rounded">
+                <button className="bg-red-800 text-white px-8 py-2 rounded">
                   Baja
                 </button>{" "}
               </td>

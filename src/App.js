@@ -1,4 +1,5 @@
 import './App.css';
+import Navbar from './Navbar';
 import LoginPage from './Login';
 import RegistrationPage from './Registration';
 import InventoryTable from './Table';
