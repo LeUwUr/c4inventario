@@ -37,8 +37,8 @@ export default function App() {
         <Route path="/login" element={<LoginPage/>}></Route>
         <Route path="/registration" element={<RegistrationPage/>}></Route>
         <Route path="/inventory" element={<InventoryTable/>}></Route>
-        <Route path="/agregar" element={<AddItem />} />
-            <Route path="/actualizar" element={<UpdateItem />} />
+        <Route path="/agregar" element={<AddItem />}></Route>
+        <Route path="/actualizar" element={<UpdateItem />}></Route>
       </Routes>
       </div>
     </Router>

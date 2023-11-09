@@ -38,7 +38,7 @@ function InventoryTable() {
   return (
     <div className="w-full py-0">
       {/* Navbar */}
-      <nav className="bg-red-900 p-2 mb-5 text-center w-screen">
+      <nav className="bg-amber-950 p-2 mb-5 text-center w-screen">
         <div className="flex items-center justify-between"> {/* Added justify-between */}
         <div className="flex justify-center items-center w-full ml-28">
             <input
@@ -90,9 +90,11 @@ function InventoryTable() {
                 <button className="bg-lime-600 text-white px-4 py-2 mr-2 rounded">
                   Detalles
                 </button>{" "}
+        
                 <button className="bg-sky-400 text-white px-4 py-2 mr-2 rounded">
                   Actualizar
                 </button>{" "}
+                
                 <button className="bg-red-800 text-white px-8 py-2 rounded">
                   Baja
                 </button>{" "}
