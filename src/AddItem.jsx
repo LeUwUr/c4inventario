@@ -1,9 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./Navbar";
 
 import {IoMdAdd} from 'react-icons/io';
 
 const AddItem = () => {
+  const [formData, setFormData] = useState({
+    upc: "",
+    nombre: "",
+    modelo: "",
+    color: "",
+    descripcion: "",
+    marca: "",
+    ubicacion: "",
+    imagenes: []
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleImageChange = (e) => {
+    const files = e.target.files;
+    setFormData({
+      ...formData,
+      imagenes: files
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+    form.append("upc", formData.upc);
+    form.append("nombre", formData.nombre);
+    form.append("modelo", formData.modelo);
+    form.append("color", formData.color);
+    form.append("descripcion", formData.descripcion);
+    form.append("marca", formData.marca);
+    form.append("ubicacion", formData.ubicacion);
+
+    // Agregar imágenes al formulario
+    for (let i = 0; i < formData.imagenes.length; i++) {
+      form.append("imagenes", formData.imagenes[i]);
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/api/addItem", {
+        method: "POST",
+        body: form
+      });
+
+      // Manejar la respuesta del servidor según tus necesidades
+      console.log(response);
+    } catch (error) {
+      console.error("Error al enviar la petición:", error);
+    }
+  };
+
   return (
   
     <div className="w-full py-0 max-w-3xl">
