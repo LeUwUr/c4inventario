@@ -1,15 +1,48 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+let data;
+
+    try {
+      const response = await fetch("http://localhost:8080/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+    console.log("Response Data:", data); // Log the response data
+
+    if (response.status === 200) {
+      // Si la respuesta es exitosa (código 200), navega a la página /inventory
+      navigate("/inventory");
+    } else {
+      // Maneja otras respuestas del servidor según tus necesidades
+      console.log(data);
+    }
+  } catch (error) {
+    console.error("Error al enviar la solicitud:", error);
+  }
+};
+
   return (
     <div className="flex justify-center items-center h-screen bg-gray-50">
+      <form onSubmit={handleSubmit}>
       <div className="w-96 p-8 bg-white shadow-md rounded-lg">
         <div className="flex justify-center">
           {/* Logo */}
@@ -33,6 +66,8 @@ function LoginPage() {
           <input
             className="w-full p-2 border rounded-md"
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             id="email"
             placeholder="example@mail.com"
           />
@@ -50,6 +85,8 @@ function LoginPage() {
             <input
               className="w-full p-2 border rounded-md"
               type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               id="password"
               placeholder="********"
             />
@@ -78,24 +115,11 @@ function LoginPage() {
 
         {/* Login Button */}
         <div className="mb-4">
-          <Link to="/inventory">
-            <button className="w-full p-2 maroon-button rounded-md hover:bg-maroon-800 focus:outline-none">
+            <button type="submit" className="w-full p-2 maroon-button rounded-md hover:bg-maroon-800 focus:outline-none">
               <strong>Entrar</strong>
             </button>
-          </Link>
         </div>
 
-        {/* Google Login Button */}
-        <div className="mb-4">
-          <button className="w-full p-2 orange-button rounded-md hover:bg-yellow-600 focus:outline-none">
-            <img
-              src="google-logo.png"
-              alt="Google Icon"
-              className="w-6 h-6 inline-block mr-2"
-            />
-            <strong>Iniciar con Google</strong>
-          </button>
-        </div>
 
         {/* Sign Up Link */}
         <div className="text-center">
@@ -109,6 +133,7 @@ function LoginPage() {
           </p>
         </div>
       </div>
+      </form>
     </div>
   );
 }

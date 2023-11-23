@@ -19,15 +19,13 @@ const RegistrationPage = () => {
     }
   };
 
+  const showSuccessNotification = () => {
+    window.alert("Registro completado exitosamente");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     comparePasswords();
-    
-    console.log(name);
-    console.log(lastname);
-    console.log(email);
-    console.log(password);
-
 
     if (!passwordError) {
       try {
@@ -80,7 +78,7 @@ const RegistrationPage = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Eva"
+              placeholder="John"
               className="w-full p-2 border rounded-md"
             />
           </div>
@@ -90,7 +88,7 @@ const RegistrationPage = () => {
               type="text"
               value={lastname}
               onChange={(e) => setLastname(e.target.value)}
-              placeholder="Aguirre"
+              placeholder="Doe"
               className="w-full p-2 border rounded-md"
             />
           </div>
@@ -102,7 +100,7 @@ const RegistrationPage = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="eva.aguirre@gmail.com"
+            placeholder="john.doe@gmail.com"
             className="w-full p-2 border rounded-md"
           />
         </div>
