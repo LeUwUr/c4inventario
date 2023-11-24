@@ -14,6 +14,12 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+  // Validar que ambos campos estén llenos
+  if (!email || !password) {
+    window.alert("Por favor, complete ambos campos.");
+    return;
+  }
+
 let data;
 
     try {
@@ -26,19 +32,19 @@ let data;
     });
 
     const data = await response.json();
-    console.log("Response Data:", data); // Log the response data
+      console.log("Response Data:", data);
 
-    if (response.status === 200) {
-      // Si la respuesta es exitosa (código 200), navega a la página /inventory
-      navigate("/inventory");
-    } else {
-      // Maneja otras respuestas del servidor según tus necesidades
-      console.log(data);
+      if (response.status === 200) {
+        console.log("Login successful!");
+        navigate("/inventory");
+      } else {
+        console.log("Login failed!");
+        window.alert("Contraseña incorrecta. Por favor, inténtelo de nuevo.");
+      }
+    } catch (error) {
+      console.error("Error al enviar la solicitud:", error);
     }
-  } catch (error) {
-    console.error("Error al enviar la solicitud:", error);
-  }
-};
+  };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-50">

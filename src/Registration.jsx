@@ -10,6 +10,7 @@ const RegistrationPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [missingFields, setMissingFields] = useState([]);
 
   const comparePasswords = () => {
     if (password !== confirmPassword) {
@@ -23,9 +24,39 @@ const RegistrationPage = () => {
     window.alert("Registro completado exitosamente");
   };
 
+  const validatePassword = () => {
+    // Verificar que la contraseña contenga al menos una mayúscula y un número
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)/;
+    return passwordRegex.test(password);
+  };
+
+  const validateEmail = () => {
+    // Verificar que el correo electrónico tenga un formato válido
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     comparePasswords();
+
+    // Verificar que todos los campos estén llenos
+    if (!name || !lastname || !email || !password || !confirmPassword) {
+      window.alert("Todos los campos son obligatorios");
+      return;
+    }
+
+    // Validar el formato del correo electrónico
+    if (!validateEmail()) {
+      window.alert("El formato del correo electrónico no es válido");
+      return;
+    }
+
+    // Validar la contraseña
+    if (!validatePassword()) {
+      window.alert("La contraseña debe contener al menos una mayúscula y un número");
+      return;
+    }
 
     if (!passwordError) {
       try {
@@ -42,10 +73,9 @@ const RegistrationPage = () => {
             }),
         });
     
-        console.log("Enviando peticion de registro");
-    
         if (response.ok) {
             console.log('Usuario registrado exitosamente');
+            showSuccessNotification();
             // Redirigir a la pagina login
             navigate('/login');
         } else {
@@ -146,6 +176,9 @@ const RegistrationPage = () => {
           <strong>Iniciar Sesión</strong>
         </Link>
       </div>
+
+
+
     </div>
   );
 };
