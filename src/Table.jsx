@@ -7,6 +7,7 @@ import { BiSolidUser } from 'react-icons/bi';
 import { RxExit } from 'react-icons/rx';
 import { SiMicrosoftexcel } from 'react-icons/si';
 import * as XLSX from 'xlsx';
+import { useLoginContext } from "./LoginContext";
 
 
 function InventoryTable() {
@@ -22,6 +23,15 @@ function InventoryTable() {
   const navigate = useNavigate();
 
   useEffect(() => {
+
+    const storedUserData = localStorage.getItem('userData');
+
+    if (storedUserData) {
+      const userData = JSON.parse(storedUserData);
+      // Establecer el estado de autenticación utilizando userData
+      // Por ejemplo, podrías establecer el usuario autenticado o un token
+    }
+
     // Assuming you fetch data from the server using the provided endpoint
     fetch('http://localhost:8080/api/getAllArtInfo')
       .then((response) => response.json())
@@ -54,15 +64,13 @@ function InventoryTable() {
   );
 
   const handleLogout = () => {
-    // Show a confirmation dialog
     const confirmLogout = window.confirm("¿Está seguro de que desea cerrar sesión?");
 
-    // If the user confirms, perform logout logic and redirect to the login page
     if (confirmLogout) {
-      // Perform logout logic (clear authentication, etc.)
+      // Limpiar la información de sesión del localStorage
+      localStorage.removeItem('userData');
       navigate('/login');
     }
-    // If the user cancels, do nothing
   };
 
   const downloadExcel = () => {

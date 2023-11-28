@@ -6,10 +6,13 @@ import InventoryTable from './Table';
 import AddItem from './AddItem';
 import UpdateItem from './UpdateItem';
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { LoginContextProvider } from './LoginContext';
+
 
 export default function App() {
   return (
     <>
+    <LoginContextProvider>
     <Router>
       <div>
         <nav>
@@ -42,6 +45,7 @@ export default function App() {
       </Routes>
       </div>
     </Router>
+    </LoginContextProvider>
     </>
   );
 }
