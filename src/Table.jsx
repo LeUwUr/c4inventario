@@ -20,6 +20,9 @@ function InventoryTable() {
   const [selectedUpdateItem, setSelectedUpdateItem] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isUserInfoModalOpen, setUserInfoModalOpen] = useState(false);
+  const [isImageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
+
   // Function to handle logout using the useNavigate hook
   const navigate = useNavigate();
   const { userData } = useLoginContext();
@@ -127,6 +130,16 @@ function InventoryTable() {
     setUserInfoModalOpen(false);
   };
 
+  const openImageModal = (image) => {
+    setSelectedImage(image);
+    setImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setImageModalOpen(false);
+  };
+
+
   // Calcular el índice de inicio y fin para la página actual
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
@@ -222,7 +235,7 @@ function InventoryTable() {
       </table>
 
       {/* Numeric pagination */}
-      <div className="flex justify-center items-center mt-4">
+      <di className="flex justify-center items-center mt-4">
         {/* Botón para ir a la página anterior */}
         <button
           className={`mx-1 px-6 py-4 border rounded-full ${currentPage === 1 ? 'bg-gray-300' : 'bg-white'}`}
@@ -241,31 +254,59 @@ function InventoryTable() {
             <div className="bg-white border border-gray-300 rounded-md h-3/5 w-4/6 p-6 relative z-10">
               {/* Content for the modal */}
               <h2 className="text-2xl font-bold mb-4">Detalles del Artículo</h2>
-              <p>UPC: {selectedItem.id || 'Desconocido'}</p>
-              <p>Serial: {selectedItem.NSerial || 'Desconocido'}</p>
-              <p>Nombre: {selectedItem.Nombre || 'Desconocido'}</p>
-              <p>Modelo: {selectedItem.Modelo || 'Desconocido'}</p>
-              <p>Descripción: {selectedItem.Descripcion || 'Desconocido'}</p>
-              <p>Fecha de creacion: {selectedItem.FechaCreacion || 'Desconocido'}</p>
-              <p>Marca: {selectedItem.Marca|| 'Desconocido'}</p>
-              <p>Resguardante: {selectedItem.Resguardante || 'Desconocido'}</p>
-              <p>Ubicacion: {selectedItem.location || 'Desconocido'}</p>
-              <p>Municipio: {selectedItem.Municipio || 'Desconocido'}</p>
-              <p>Estado: {selectedItem.estado || 'Desconocido'}</p>
+
+              <div className="flex">
+                <div className="w-1/2 pr-4">
+                  <p><strong>UPC:</strong> {selectedItem.id || 'Desconocido'}</p>
+                  <p><strong>Serial:</strong> {selectedItem.NSerial || 'Desconocido'}</p>
+                  <p><strong>Nombre:</strong> {selectedItem.Nombre || 'Desconocido'}</p>
+                  <p><strong>Modelo:</strong> {selectedItem.Modelo || 'Desconocido'}</p>
+                  <p><strong>Descripción:</strong> {selectedItem.Descripcion || 'Desconocido'}</p>
+                  <p><strong>Fecha de creación:</strong> {selectedItem.FechaCreacion || 'Desconocido'}</p>
+                </div>
+                <div className="w-1/2 pl-4">
+                  <p><strong>Marca:</strong> {selectedItem.Marca || 'Desconocido'}</p>
+                  <p><strong>Resguardante:</strong> {selectedItem.Resguardante || 'Desconocido'}</p>
+                  <p><strong>Ubicación:</strong> {selectedItem.location || 'Desconocido'}</p>
+                  <p><strong>Municipio:</strong> {selectedItem.Municipio || 'Desconocido'}</p>
+                  <p><strong>Estado:</strong> {selectedItem.estado || 'Desconocido'}</p>
+                </div>
+              </div>
+
               {/* Add more details as needed */}
               {selectedItem.images && selectedItem.images.length > 0 ? (
-                <div>
-                  <p>Imágenes:</p>
-                  <ul>
+                <div className="mt-4">
+                  <p><strong>Imágenes:</strong></p>
+                  <div className="flex">
                     {selectedItem.images.map((image, index) => (
-                      <li key={index}>{image}</li>
+                      <img
+                        key={index}
+                        src={image}
+                        alt={`Imagen ${index + 1}`}
+                        className="max-w-full h-auto object-contain mr-2 mb-2 cursor-pointer"
+                        onClick={() => openImageModal(image)}
+                      />
                     ))}
-                  </ul>
+                  </div>
                 </div>
               ) : (
                 <p>Sin imágenes disponibles</p>
               )}
-              <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={closeModal}>
+              {/* Botón "Cerrar" posicionado en la esquina inferior derecha */}
+              <button className="absolute bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={closeModal}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de imagen */}
+        {isImageModalOpen && selectedImage && (
+          <div className="fixed inset-0 flex items-center justify-center">
+            <div className="bg-black bg-opacity-50 absolute inset-0" onClick={closeImageModal}></div>
+            <div className="bg-white border border-gray-300 rounded-md p-6 relative z-10 max-w-screen-lg">
+              <img src={selectedImage} alt="Imagen ampliada" className="max-w-full max-h-screen object-contain" />
+              <button className="absolute top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={closeImageModal}>
                 Cerrar
               </button>
             </div>
@@ -328,9 +369,9 @@ function InventoryTable() {
         >
           <strong>{">"}</strong>
         </button>
-      </div>
+      </di>
 
-    </div>
+    </div >
 
   );
 }
