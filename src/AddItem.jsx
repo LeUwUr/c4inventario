@@ -72,6 +72,7 @@ const AddItem = () => {
                 return {
                     ...prevData,
                     prevData: updatedResguardante,
+                    email: userData.email,
                 };
             } else {
                 return {
@@ -118,6 +119,8 @@ const AddItem = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        console.log("userData:", userData);
+
         const form = new FormData();
         form.append("codigo", formData.codigo);
         form.append("serial", formData.serial);
@@ -127,7 +130,7 @@ const AddItem = () => {
         form.append("marca", formData.marca);
         form.append("ubicacion", formData.ubicacion);
         form.append("municipio", formData.municipio);
-        form.append("email", formData.email);
+        form.append("email", userData.email);
         // Use user data directly here
         form.append("resguardante", `${userData.firstName} ${userData.lastName}`);
 
