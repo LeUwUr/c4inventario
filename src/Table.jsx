@@ -83,11 +83,26 @@ function InventoryTable() {
     XLSX.writeFile(workbook, 'articulo_data.xlsx');
   };
 
-  const openModal = (item) => {
-    setSelectedItem(item);
-    setModalOpen(true);
+  const fetchProductDetails = async (productId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/getArtByID/${productId}`);
+      const data = await response.json();
+
+      if (data.status === 'SUCCESS') {
+        openModal(data.data);
+      } else {
+        console.error('Failed to fetch product details');
+      }
+    } catch (error) {
+      console.error('Error fetching product details', error);
+    }
   };
 
+  const openModal = async (productDetails) => {
+
+    setSelectedItem(productDetails);
+    setModalOpen(true);
+  };
 
   const closeModal = () => {
     setSelectedItem(null);
@@ -187,7 +202,7 @@ function InventoryTable() {
               <td className="py-2 w-auto border-transparent">
                 <button
                   className="bg-lime-600 text-white px-6 py-2 mr-2 rounded"
-                  onClick={() => openModal(item)}
+                  onClick={() => fetchProductDetails(item.Num_Referencia)}
                 >
                   Detalles
                 </button>{" "}
@@ -226,11 +241,30 @@ function InventoryTable() {
             <div className="bg-white border border-gray-300 rounded-md h-3/5 w-4/6 p-6 relative z-10">
               {/* Content for the modal */}
               <h2 className="text-2xl font-bold mb-4">Detalles del Artículo</h2>
-              <p>Num_Referencia: {selectedItem.Num_Referencia}</p>
-              <p>Nombre: {selectedItem.Nombre}</p>
-              <p>Ubicacion: {selectedItem.Ubicacion}</p>
-              <p>Resguardante: {selectedItem.Resguardante}</p>
+              <p>UPC: {selectedItem.id || 'Desconocido'}</p>
+              <p>Serial: {selectedItem.NSerial || 'Desconocido'}</p>
+              <p>Nombre: {selectedItem.Nombre || 'Desconocido'}</p>
+              <p>Modelo: {selectedItem.Modelo || 'Desconocido'}</p>
+              <p>Descripción: {selectedItem.Descripcion || 'Desconocido'}</p>
+              <p>Fecha de creacion: {selectedItem.FechaCreacion || 'Desconocido'}</p>
+              <p>Marca: {selectedItem.Marca|| 'Desconocido'}</p>
+              <p>Resguardante: {selectedItem.Resguardante || 'Desconocido'}</p>
+              <p>Ubicacion: {selectedItem.location || 'Desconocido'}</p>
+              <p>Municipio: {selectedItem.Municipio || 'Desconocido'}</p>
+              <p>Estado: {selectedItem.estado || 'Desconocido'}</p>
               {/* Add more details as needed */}
+              {selectedItem.images && selectedItem.images.length > 0 ? (
+                <div>
+                  <p>Imágenes:</p>
+                  <ul>
+                    {selectedItem.images.map((image, index) => (
+                      <li key={index}>{image}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p>Sin imágenes disponibles</p>
+              )}
               <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={closeModal}>
                 Cerrar
               </button>
@@ -261,8 +295,8 @@ function InventoryTable() {
         {/* Ventana emergente con la información del usuario */}
         {isUserInfoModalOpen && (
           <div className="fixed top-16 right-25 w-5/6 flex flex-col items-end">
-             {/* Background overlay */}
-             <div className="fixed inset-0" onClick={closeUserInfoModal}></div>
+            {/* Background overlay */}
+            <div className="fixed inset-0" onClick={closeUserInfoModal}></div>
             <div className="bg-white p-4 rounded-md shadow-lg shadow-black">
               <p className="text-xl text-center text-amber-950 mb-2"><strong>Mi cuenta</strong></p>
               <p className="mb-1"><strong>Nombre:</strong> {userData.firstName}</p>
