@@ -17,7 +17,7 @@ export default function App() {
       <div>
         <nav>
           <ul>
-            <li>
+            {/* <li>
               <Link to="/login">Login</Link>
             </li>
             <li>
@@ -31,7 +31,7 @@ export default function App() {
               </li>
               <li>
                 <Link to="/actualizar">Actualizar</Link>
-              </li>
+              </li> */}
           </ul>
         </nav>
     <hr/>

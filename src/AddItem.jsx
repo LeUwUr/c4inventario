@@ -9,6 +9,7 @@ import { MdDelete, MdOutlineAddPhotoAlternate } from "react-icons/md";
 const MAX_FILE_SIZE_MB = 5; // Tamaño máximo permitido en megabytes
 
 const AddItem = () => {
+    const navigate = useNavigate();
     const { userData, setUserData } = useLoginContext();
     const [numImages, setNumImages] = useState(1);
 
@@ -67,9 +68,10 @@ const AddItem = () => {
         const { name, value } = e.target;
         setFormData((prevData) => {
             if (name === "resguardante") {
+                const updatedResguardante = `${userData.firstName} ${userData.lastName}`;
                 return {
                     ...prevData,
-                    [name]: `${userData.firstName} ${userData.lastName}`,
+                    prevData: updatedResguardante,
                 };
             } else {
                 return {
@@ -113,9 +115,6 @@ const AddItem = () => {
 
     };
 
-    const navigate = useNavigate();
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -129,11 +128,15 @@ const AddItem = () => {
         form.append("ubicacion", formData.ubicacion);
         form.append("municipio", formData.municipio);
         form.append("email", formData.email);
-        form.append("resguardante", formData.resguardante);
+        // Use user data directly here
+        form.append("resguardante", `${userData.firstName} ${userData.lastName}`);
+
         // Agregar imágenes al formulario
         for (let i = 0; i < formData.imagenes.length; i++) {
             form.append("images", formData.imagenes[i]);
         }
+
+        console.log("FormData:", formData);
 
         if (!formData.codigo) {
             alert('Please enter a codigo before submitting.');
@@ -147,7 +150,7 @@ const AddItem = () => {
             });
 
             if (!response.ok) {
-                console.error("Respuesta del servidor:", await response.text());
+                console.error("Respuesta del servidor:", await response.json());
             } else {
                 // Mostrar una ventana/modal o mensaje al usuario de que se ha agregado correctamente
                 alert("Elemento agregado correctamente");
@@ -158,6 +161,7 @@ const AddItem = () => {
         } catch (error) {
             console.error("Error al enviar la petición:", error);
         }
+
     };
 
     const addImageField = () => {
@@ -262,7 +266,7 @@ const AddItem = () => {
                             className="w-full px-3 py-2 border rounded-md"
                             type="text"
                             placeholder="123456789"
-                            name="NSerial"
+                            name="serial"
                             onChange={handleInputChange}
                         />
                     </div>
@@ -380,8 +384,8 @@ const AddItem = () => {
                                     type="text"
                                     placeholder={`${userData.firstName} ${userData.lastName}`}
                                     name="resguardante"
-                                    readOnly={true}
-                                    value={`${userData.firstName} ${userData.lastName}`}
+                                    value={formData.resguardante}
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -419,8 +423,7 @@ const AddItem = () => {
                     </div>
                     <div className="col-span-3 text-right">
                         <button style={{ width: "32%" }} className="px-3 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
-                            onClick={handleSubmit}
-                        >
+                            onClick={handleSubmit}>
                             Agregar
                         </button>
                     </div>
