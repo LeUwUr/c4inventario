@@ -159,7 +159,7 @@ const AddItem = () => {
                 alert("Elemento agregado correctamente");
 
                 // Redirigir al usuario a la página /Table
-                navigate("/inventory");
+                navigate("/inicio");
             }
         } catch (error) {
             console.error("Error al enviar la petición:", error);

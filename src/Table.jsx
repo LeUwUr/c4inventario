@@ -24,6 +24,7 @@ function InventoryTable() {
   const [selectedImage, setSelectedImage] = useState('');
   const [ubicaciones, setUbicaciones] = useState([]);
   const [municipios, setMunicipios] = useState([]);
+  const [image, setImage] = useState([]);
 
   // Function to handle logout using the useNavigate hook
   const navigate = useNavigate();
@@ -128,6 +129,14 @@ function InventoryTable() {
       const data = await response.json();
 
       if (data.status === 'SUCCESS') {
+        console.log('Detalles del producto:', data.data);
+        const imageUrls = data.data.images.map(image => `http://localhost:8080/images/${image}`);
+        console.log('Rutas de imágenes corregidas:', imageUrls);
+        setSelectedItem({
+          ...selectedItem,
+          images: imageUrls,
+        });
+
         openModal(data.data);
       } else {
         console.error('Failed to fetch product details');
@@ -169,8 +178,8 @@ function InventoryTable() {
   }, []);
 
   const openModal = async (productDetails) => {
-
-    setSelectedItem(productDetails);
+    console.log('Selected Item:', { ...selectedItem, images: productDetails.images });
+    setSelectedItem({ ...selectedItem, images: productDetails.images });
     setModalOpen(true);
   };
 
@@ -377,6 +386,7 @@ function InventoryTable() {
                 </div>
               </div>
 
+              {/* Agregar seccion para mostrar las imagenes*/}
               {/* Add more details as needed */}
               {selectedItem.images && selectedItem.images.length > 0 ? (
                 <div className="mt-4">
@@ -385,10 +395,10 @@ function InventoryTable() {
                     {selectedItem.images.map((image, index) => (
                       <img
                         key={index}
-                        src={image}
+                        src={`http://localhost:8080/Images/${image}`}
                         alt={`Imagen ${index + 1}`}
                         className="max-w-full h-auto object-contain mr-2 mb-2 cursor-pointer"
-                        onClick={() => openImageModal(image)}
+                        onClick={() => openImageModal(`http://localhost:8080/Images/${image}`)}
                       />
                     ))}
                   </div>
@@ -447,26 +457,27 @@ function InventoryTable() {
                   <input type="text" value={updateDetails.Resguardante || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
                   <p><strong>Fecha de Creacion:</strong></p>
                   <input type="text" value={updateDetails.FechaCreacion || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
-                  <p><strong>Estado:</strong></p>
-                  <input type="text" value={updateDetails.Estado || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+
                 </div>
               </div>
               {/* Descripción y Fecha de creación en otra div */}
               <div className="mt-2 pl-8 pr-8">
                 <div>
-                  <p className="font-bold">Descripción:</p>
-                  <input
-                    type="text"
-                    value={updateDetails.Descripcion}
-                    readOnly
-                    className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
-                  />
+                  <p><strong>Descripción:</strong></p>
+                  <input type="text" value={updateDetails.Descripcion} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
                 </div>
               </div>
-              {/* Ubicación */}
+
               <div className="mt-2 pl-8 pr-8 flex">
+
+                {/* Estado */}
+                <div className="w-1/3 pr-4">
+                  <p><strong>Estado:</strong></p>
+                  <input type="text" value={updateDetails.estado || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                </div>
+
                 {/* Ubicación */}
-                <div className="w-1/2 pr-4">
+                <div className="w-1/3 pr-4">
                   <p><strong>Ubicación:</strong></p>
                   <select
                     value={selectedUbicacion}
@@ -479,7 +490,9 @@ function InventoryTable() {
                   >
                     <option value="" disabled>Seleccione una ubicación</option>
                     {ubicaciones.map((ubicacion, index) => (
-                      <option key={index} value={ubicacion.Lugar}>
+                      <option key={index} value={ubicacion.Lugar}
+                        defaultValue={ubicacion.Lugar === updateDetails.ubicacion}
+                      >
                         {ubicacion.Lugar}
                       </option>
                     ))}
@@ -487,7 +500,7 @@ function InventoryTable() {
                 </div>
 
                 {/* Municipio */}
-                <div className="w-1/2 pl-4">
+                <div className="w-1/3 pl-4">
                   <p><strong>Municipio:</strong></p>
                   <select
                     value={selectedMunicipio}
