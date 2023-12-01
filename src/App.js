@@ -39,7 +39,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage/>}></Route>
         <Route path="/registration" element={<RegistrationPage/>}></Route>
-        <Route path="/inventory" element={<InventoryTable/>}></Route>
+        <Route path="/inicio" element={<InventoryTable/>}></Route>
         <Route path="/agregar" element={<AddItem />}></Route>
         <Route path="/actualizar" element={<UpdateItem />}></Route>
       </Routes>

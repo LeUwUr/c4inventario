@@ -22,10 +22,34 @@ function InventoryTable() {
   const [isUserInfoModalOpen, setUserInfoModalOpen] = useState(false);
   const [isImageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const [ubicaciones, setUbicaciones] = useState([]);
+  const [municipios, setMunicipios] = useState([]);
 
   // Function to handle logout using the useNavigate hook
   const navigate = useNavigate();
   const { userData } = useLoginContext();
+
+  const [updateDetails, setUpdateDetails] = useState({
+    Num_Referencia: '',
+    NSerial: '',
+    Nombre: '',
+    Marca: '',
+    Modelo: '',
+    Resguardante: '',
+    Ubicacion: '',
+    Municipio: '',
+    Estado: '',
+    FechaCreacion: '',
+    Descripcion: '',
+    // Otros campos necesarios
+  });
+
+  const [selectedUbicacion, setSelectedUbicacion] = useState(updateDetails.Ubicacion || ''); // Valor inicial basado en los detalles actuales
+  const [selectedMunicipio, setSelectedMunicipio] = useState(updateDetails.Municipio || ''); // Valor inicial basado en los detalles actuales
+  const [selectedMotivo, setSelectedMotivo] = useState('');
+  const [motivo, setMotivo] = useState('');
+  const [ubicacionMunicipioChanged, setUbicacionMunicipioChanged] = useState(false);
+
 
   useEffect(() => {
 
@@ -48,6 +72,18 @@ function InventoryTable() {
         }
       })
       .catch((error) => console.error(error));
+    fetch('http://localhost:8080/api/ubicaciones')
+      .then((response) => response.json())
+      .then((data) => setUbicaciones(data))
+      .catch((error) => console.error(error));
+
+    // Obtener municipios
+    fetch('http://localhost:8080/api/municipios')
+      .then((response) => response.json())
+      .then((data) => setMunicipios(data))
+      .catch((error) => console.error(error));
+
+
   }, []);
 
   // Function to handle input change and filter data
@@ -101,6 +137,37 @@ function InventoryTable() {
     }
   };
 
+  const openUpdateModal = async (item) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/getArtByID/${item.Num_Referencia}`);
+      const data = await response.json();
+
+      if (data.status === 'SUCCESS') {
+        setUpdateDetails(data.data);
+        setSelectedUpdateItem(item);
+        setUpdateModalOpen(true);
+      } else {
+        console.error('Failed to fetch product details');
+      }
+    } catch (error) {
+      console.error('Error fetching product details', error);
+    }
+  };
+
+  useEffect(() => {
+    // Obtener ubicaciones
+    fetch('http://localhost:8080/api/ubicaciones')
+      .then((response) => response.json())
+      .then((data) => setUbicaciones(data))
+      .catch((error) => console.error(error));
+
+    // Obtener municipios
+    fetch('http://localhost:8080/api/municipios')
+      .then((response) => response.json())
+      .then((data) => setMunicipios(data))
+      .catch((error) => console.error(error));
+  }, []);
+
   const openModal = async (productDetails) => {
 
     setSelectedItem(productDetails);
@@ -112,14 +179,10 @@ function InventoryTable() {
     setModalOpen(false);
   };
 
-  const openUpdateModal = (item) => {
-    setSelectedUpdateItem(item);
-    setUpdateModalOpen(true);
-  };
-
   const closeUpdateModal = () => {
-    setSelectedUpdateItem(null);
     setUpdateModalOpen(false);
+    setUbicacionMunicipioChanged(false);
+    setMotivo('');
   };
 
   const openUserInfoModal = () => {
@@ -139,6 +202,21 @@ function InventoryTable() {
     setImageModalOpen(false);
   };
 
+  const renderColumnFields = (fields) => {
+    return fields.map((field) => (
+      <div key={field} className="mb-2">
+        <p className="font-bold">{field}:</p>
+        <input
+          type="text"
+          value={updateDetails[field] || 'Desconocido'}
+          readOnly
+          className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
+        />
+      </div>
+    ));
+  };
+
+  const MAX_VISIBLE_PAGES = 10;
 
   // Calcular el índice de inicio y fin para la página actual
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -151,7 +229,7 @@ function InventoryTable() {
   const totalPages = Math.ceil(inventoryData.length / itemsPerPage) || 1;
 
   return (
-    <div className="w-full py-0">
+    <div className="w-full">
       {/* Navbar */}
       <nav className="bg-amber-950 p-2 mb-5 text-center w-screen">
         <div className="flex items-center justify-between"> {/* Added justify-between */}
@@ -191,51 +269,56 @@ function InventoryTable() {
         </div>
       </nav>
 
-      <h1 className="text-2xl font-bold text-red-900 mb-5 text-center">
+      <h1 className="text-3xl font-bold text-red-900 mt-10 mb-5 text-center">
         Inventario
       </h1>
-      <table className="mx-auto w-10/12 text-center bg-white">
-        <thead>
-          <tr>
-            <th className="py-2 px-4 border text-white bg-amber-500">UPC</th>
-            <th className="py-2 px-4 border text-white bg-amber-500">NOMBRE</th>
-            <th className="py-2 px-4 border text-white bg-amber-500">UBICACION</th>
-            <th className="py-2 px-4 border text-white bg-amber-500">CREADO POR</th>
-            <th className="py-2 px-4 border text-white bg-amber-500">OPCIONES</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentItems.map((item, index) => (
-            <tr key={index}>
-              <td className="py-2 px-4 border-transparent">{item.Num_Referencia}</td>
-              <td className="py-2 px-4 border-transparent">{item.Nombre}</td>
-              <td className="py-2 px-4 border-transparent">{item.Ubicacion}</td>
-              <td className="py-2 px-4 border-transparent">{item.Resguardante}</td>
-
-              <td className="py-2 w-auto border-transparent">
-                <button
-                  className="bg-lime-600 text-white px-6 py-2 mr-2 rounded"
-                  onClick={() => fetchProductDetails(item.Num_Referencia)}
-                >
-                  Detalles
-                </button>{" "}
-                <button
-                  className="bg-sky-400 text-white px-4 py-2 mr-2 rounded"
-                  onClick={() => openUpdateModal(item)}
-                >
-                  Actualizar
-                </button>{" "}
-                <button className="bg-red-800 text-white px-8 py-2 rounded">
-                  Baja
-                </button>{" "}
-              </td>
+      <div className="relative">
+        <table className="mx-auto w-10/12 text-center bg-white">
+          <thead>
+            <tr>
+              <th className="py-2 px-4 border text-white bg-amber-500">UPC</th>
+              <th className="py-2 px-4 border text-white bg-amber-500">NOMBRE</th>
+              <th className="py-2 px-4 border text-white bg-amber-500">UBICACION</th>
+              <th className="py-2 px-4 border text-white bg-amber-500">CREADO POR</th>
+              <th className="py-2 px-4 border text-white bg-amber-500">OPCIONES</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {currentItems.map((item, index) => (
+              <tr key={index}>
+                <td className="py-2 px-4 border-transparent">{item.Num_Referencia}</td>
+                <td className="py-2 px-4 border-transparent">{item.Nombre}</td>
+                <td className="py-2 px-4 border-transparent">{item.Ubicacion}</td>
+                <td className="py-2 px-4 border-transparent">{item.Resguardante}</td>
+                <td className="py-2 w-auto border-transparent relative">
+                  <div className="options-container">
+                    <button
+                      className="bg-lime-600 text-white px-6 py-2 mr-2 rounded"
+                      onClick={() => fetchProductDetails(item.Num_Referencia)}
+                    >
+                      Detalles
+                    </button>{" "}
+                    <button
+                      className="bg-sky-400 text-white px-4 py-2 mr-2 rounded"
+                      onClick={() => openUpdateModal(item)}
+                    >
+                      Actualizar
+                    </button>{" "}
+                    <button
+                      className="bg-red-800 text-white px-8 py-2 rounded"
+                    >
+                      Baja
+                    </button>{" "}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Numeric pagination */}
-      <di className="flex justify-center items-center mt-4">
+      <div className="flex justify-center items-center mt-20">
         {/* Botón para ir a la página anterior */}
         <button
           className={`mx-1 px-6 py-4 border rounded-full ${currentPage === 1 ? 'bg-gray-300' : 'bg-white'}`}
@@ -247,29 +330,50 @@ function InventoryTable() {
 
         {/* Modal */}
         {isModalOpen && selectedItem && (
-          <div className="fixed inset-0 flex items-center justify-center">
+          <div className="fixed inset-0 flex items-center justify-center overflow-y-auto">
             {/* Background overlay */}
             <div className="bg-black bg-opacity-50 absolute inset-0" onClick={closeModal}></div>
             {/* Modal content */}
-            <div className="bg-white border border-gray-300 rounded-md h-3/5 w-4/6 p-6 relative z-10">
+            <div className="bg-white border border-gray-300 rounded-md h-4/5 w-4/6 p-6 relative z-10">
               {/* Content for the modal */}
-              <h2 className="text-2xl font-bold mb-4">Detalles del Artículo</h2>
+              <h2 className="text-2xl text-center font-bold mt-2 mb-4">Detalles del Artículo</h2>
 
               <div className="flex">
-                <div className="w-1/2 pr-4">
-                  <p><strong>UPC:</strong> {selectedItem.id || 'Desconocido'}</p>
-                  <p><strong>Serial:</strong> {selectedItem.NSerial || 'Desconocido'}</p>
-                  <p><strong>Nombre:</strong> {selectedItem.Nombre || 'Desconocido'}</p>
-                  <p><strong>Modelo:</strong> {selectedItem.Modelo || 'Desconocido'}</p>
-                  <p><strong>Descripción:</strong> {selectedItem.Descripcion || 'Desconocido'}</p>
-                  <p><strong>Fecha de creación:</strong> {selectedItem.FechaCreacion || 'Desconocido'}</p>
+                {/* Primera columna */}
+                <div className="w-1/2 pl-8 pr-8">
+                  <p><strong>UPC:</strong></p>
+                  <input type="text" value={selectedItem.id || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Serial:</strong></p>
+                  <input type="text" value={selectedItem.NSerial || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Nombre:</strong></p>
+                  <input type="text" value={selectedItem.Nombre || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Marca:</strong></p>
+                  <input type="text" value={selectedItem.Marca || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Modelo:</strong></p>
+                  <input type="text" value={selectedItem.Modelo || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
                 </div>
-                <div className="w-1/2 pl-4">
-                  <p><strong>Marca:</strong> {selectedItem.Marca || 'Desconocido'}</p>
-                  <p><strong>Resguardante:</strong> {selectedItem.Resguardante || 'Desconocido'}</p>
-                  <p><strong>Ubicación:</strong> {selectedItem.location || 'Desconocido'}</p>
-                  <p><strong>Municipio:</strong> {selectedItem.Municipio || 'Desconocido'}</p>
-                  <p><strong>Estado:</strong> {selectedItem.estado || 'Desconocido'}</p>
+
+                {/* Segunda columna */}
+                <div className="w-1/2 pl-8 pr-8">
+                  <p><strong>Resguardante</strong></p>
+                  <input type="text" value={selectedItem.Resguardante || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Ubicación:</strong></p>
+                  <input type="text" value={selectedItem.location || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Municipio:</strong></p>
+                  <input type="text" value={selectedItem.Municipio || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Estado:</strong></p>
+                  <input type="text" value={selectedItem.estado || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Fecha de creación:</strong></p>
+                  <input type="text" value={selectedItem.FechaCreacion || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                </div>
+
+              </div>
+
+              {/* Descripción y Fecha de creación en otra div */}
+              <div className="mt-4 pl-8 pr-8">
+                <div>
+                  <p><strong>Descripción:</strong></p>
+                  <input type="text" value={selectedItem.Descripcion || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
                 </div>
               </div>
 
@@ -293,7 +397,7 @@ function InventoryTable() {
                 <p>Sin imágenes disponibles</p>
               )}
               {/* Botón "Cerrar" posicionado en la esquina inferior derecha */}
-              <button className="absolute bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={closeModal}>
+              <button className="absolute bottom-8 right-16 bg-amber-950 text-white px-6 py-2 rounded" onClick={closeModal}>
                 Cerrar
               </button>
             </div>
@@ -319,15 +423,107 @@ function InventoryTable() {
             {/* Background overlay */}
             <div className="bg-black bg-opacity-50 absolute inset-0" onClick={closeUpdateModal}></div>
             {/* Modal content */}
-            <div className="bg-white border border-gray-300 rounded-md h-3/5 w-4/6 p-6 relative z-10">
+            <div className="bg-white border border-gray-300 rounded-md h-4/5 w-4/6 p-6 relative z-10">
               {/* Content for the modal */}
-              <h2 className="text-2xl font-bold mb-4">Actualizar Artículo</h2>
-              {/* Add form or content for updating */}
-              {/* Example form field: */}
-              <input type="text" placeholder="Nuevo Nombre" />
-              {/* Add more fields as needed */}
-              <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={closeUpdateModal}>
-                Guardar Cambios
+              <h2 className="text-2xl text-center font-bold mt-2 mb-4">Actualizar Artículo</h2>
+              <div className="flex">
+                {/* Primera columna */}
+                <div className="w-1/2 pl-8 pr-8">
+                  <p><strong>UPC:</strong></p>
+                  <input type="text" value={updateDetails.id || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Serial:</strong></p>
+                  <input type="text" value={updateDetails.NSerial || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Nombre:</strong></p>
+                  <input type="text" value={updateDetails.Nombre || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Marca:</strong></p>
+                  <input type="text" value={updateDetails.Marca || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+
+                </div>
+                {/*Segunda columna*/}
+                <div className="w-1/2 pl-8 pr-8">
+                  <p><strong>Modelo:</strong></p>
+                  <input type="text" value={updateDetails.Modelo || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Resguardante:</strong></p>
+                  <input type="text" value={updateDetails.Resguardante || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Fecha de Creacion:</strong></p>
+                  <input type="text" value={updateDetails.FechaCreacion || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                  <p><strong>Estado:</strong></p>
+                  <input type="text" value={updateDetails.Estado || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
+                </div>
+              </div>
+              {/* Descripción y Fecha de creación en otra div */}
+              <div className="mt-2 pl-8 pr-8">
+                <div>
+                  <p className="font-bold">Descripción:</p>
+                  <input
+                    type="text"
+                    value={updateDetails.Descripcion}
+                    readOnly
+                    className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
+                  />
+                </div>
+              </div>
+              {/* Ubicación */}
+              <div className="mt-2 pl-8 pr-8 flex">
+                {/* Ubicación */}
+                <div className="w-1/2 pr-4">
+                  <p><strong>Ubicación:</strong></p>
+                  <select
+                    value={selectedUbicacion}
+                    onChange={(e) => {
+                      setSelectedUbicacion(e.target.value);
+                      setUbicacionMunicipioChanged(true);
+                      setMotivo('');
+                    }}
+                    className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
+                  >
+                    <option value="" disabled>Seleccione una ubicación</option>
+                    {ubicaciones.map((ubicacion, index) => (
+                      <option key={index} value={ubicacion.Lugar}>
+                        {ubicacion.Lugar}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Municipio */}
+                <div className="w-1/2 pl-4">
+                  <p><strong>Municipio:</strong></p>
+                  <select
+                    value={selectedMunicipio}
+                    onChange={(e) => {
+                      setSelectedMunicipio(e.target.value);
+                      setUbicacionMunicipioChanged(true);
+                      setMotivo('');
+                    }}
+                    className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
+                  >
+                    <option value="" disabled>Seleccione un municipio</option>
+                    {municipios.map((municipio, index) => (
+                      <option key={index} value={municipio.Nombre}>
+                        {municipio.Nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="mt-2 pl-8 pr-8">
+                {/* Mostrar el input de motivo solo si la ubicación o el municipio cambió */}
+                {ubicacionMunicipioChanged && (
+                  <div>
+                    <p><strong>Motivo:</strong></p>
+                    <input
+                      type="text"
+                      value={motivo}
+                      onChange={(e) => setMotivo(e.target.value)}
+                      className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
+                    />
+                  </div>
+                )}
+              </div>
+              <button className="absolute bottom-4 right-16 bg-amber-950 text-white px-6 py-2 rounded" onClick={closeUpdateModal}>
+                Actualizar
               </button>
             </div>
           </div>
@@ -351,7 +547,7 @@ function InventoryTable() {
         )}
 
         {/* Mapear solo la cantidad necesaria de botones de página */}
-        {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+        {Array.from({ length: Math.min(totalPages, MAX_VISIBLE_PAGES) }, (_, index) => index + 1).map((page) => (
           <button
             key={page}
             className={`mx-1 px-6 py-4 border rounded-full ${currentPage === page ? 'bg-amber-500' : 'bg-white'}`}
@@ -369,7 +565,7 @@ function InventoryTable() {
         >
           <strong>{">"}</strong>
         </button>
-      </di>
+      </div>
 
     </div >
 

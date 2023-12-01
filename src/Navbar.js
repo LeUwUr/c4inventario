@@ -8,7 +8,7 @@ function Navbar({children}) {
 <nav className="bg-amber-950 p-2 mb-10 text-center w-screen">
   <div className="flex items-center justify-between">
       <div className="flex items-center ml-20">
-        <Link to='/inventory'>
+        <Link to='/inicio'>
           <ImArrowLeft alt='Volver' className="text-white w-10 h-10" />
         </Link>
       </div>

@@ -44,7 +44,7 @@ function LoginPage() {
           lastName: data.data.lastName,
           email: data.data.email,
         });
-        navigate("/inventory");
+        navigate("/inicio");
       } else {
         console.log("Login failed!");
         window.alert("Contraseña incorrecta. Por favor, inténtelo de nuevo.");
