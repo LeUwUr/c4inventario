@@ -433,9 +433,9 @@ function InventoryTable() {
         {isImageModalOpen && selectedImage && (
           <div className="fixed inset-0 flex items-center justify-center">
             <div className="bg-black bg-opacity-50 absolute inset-0" onClick={closeImageModal}></div>
-            <div className="bg-white border border-gray-300 rounded-md p-6 relative z-10 max-w-screen-lg">
+            <div className="bg-white border border-gray-300 rounded-md p-6 relative z-10 max-w-screen-lg flex flex-col items-center">
               <img src={selectedImage} alt="Imagen ampliada" className="max-w-full max-h-screen object-contain" />
-              <button className="absolute top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={closeImageModal}>
+              <button className="mt-4 bg-amber-500 text-white px-4 py-2 rounded" onClick={closeImageModal}>
                 Cerrar
               </button>
             </div>
@@ -562,7 +562,7 @@ function InventoryTable() {
           <div className="fixed top-16 right-25 w-5/6 flex flex-col items-end">
             {/* Background overlay */}
             <div className="fixed inset-0" onClick={closeUserInfoModal}></div>
-            <div className="bg-white p-4 rounded-md shadow-lg shadow-black">
+            <div className="bg-white p-4 rounded-md shadow-lg shadow-black text-center">
               <p className="text-xl text-center text-amber-950 mb-2"><strong>Mi cuenta</strong></p>
               <p className="mb-1"><strong>Nombre:</strong> {userData.firstName}</p>
               <p className="mb-1"><strong>Apellido:</strong> {userData.lastName}</p>
