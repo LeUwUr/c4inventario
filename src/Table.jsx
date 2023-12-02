@@ -395,7 +395,6 @@ function InventoryTable() {
                     {selectedItem.images.map((image, index) => (
                       <img
                         key={index}
-                        src={`http://localhost:8080/Images/${image}`}
                         alt={`Imagen ${index + 1}`}
                         className="max-w-full h-auto object-contain mr-2 mb-2 cursor-pointer"
                         onClick={() => openImageModal(`http://localhost:8080/Images/${image}`)}
