@@ -178,10 +178,26 @@ function InventoryTable() {
   }, []);
 
   const openModal = async (productDetails) => {
-    console.log('Selected Item:', { ...selectedItem, images: productDetails.images });
-    setSelectedItem({ ...selectedItem, images: productDetails.images });
-    setModalOpen(true);
+    try {
+      console.log('Selected Item:', productDetails);
+
+      const imageUrls = productDetails.images.map(image => ({
+        name: image,  // Store both name and URL
+        url: `http://localhost:8080/Images/${image}`,
+      }));
+
+      setSelectedItem({
+        ...productDetails,
+        images: imageUrls,
+      });
+
+      setModalOpen(true);
+    } catch (error) {
+      console.error('Error opening modal:', error);
+    }
   };
+
+
 
   const closeModal = () => {
     setSelectedItem(null);
@@ -285,7 +301,7 @@ function InventoryTable() {
         <table className="mx-auto w-10/12 text-center bg-white">
           <thead>
             <tr>
-              <th className="py-2 px-4 border text-white bg-amber-500">UPC</th>
+              <th className="py-2 px-4 border text-white bg-amber-500">NÚMERO DE INVENTARIO</th>
               <th className="py-2 px-4 border text-white bg-amber-500">NOMBRE</th>
               <th className="py-2 px-4 border text-white bg-amber-500">UBICACION</th>
               <th className="py-2 px-4 border text-white bg-amber-500">CREADO POR</th>
@@ -350,7 +366,7 @@ function InventoryTable() {
               <div className="flex">
                 {/* Primera columna */}
                 <div className="w-1/2 pl-8 pr-8">
-                  <p><strong>UPC:</strong></p>
+                  <p><strong>Número de inventario:</strong></p>
                   <input type="text" value={selectedItem.id || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
                   <p><strong>Serial:</strong></p>
                   <input type="text" value={selectedItem.NSerial || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
@@ -387,18 +403,18 @@ function InventoryTable() {
               </div>
 
               {/* Agregar seccion para mostrar las imagenes*/}
-              {/* Add more details as needed */}
               {selectedItem.images && selectedItem.images.length > 0 ? (
                 <div className="mt-4">
                   <p><strong>Imágenes:</strong></p>
-                  <div className="flex">
+                  <div className="flex flex-col">
                     {selectedItem.images.map((image, index) => (
-                      <img
+                      <p
                         key={index}
-                        alt={`Imagen ${index + 1}`}
-                        className="max-w-full h-auto object-contain mr-2 mb-2 cursor-pointer"
-                        onClick={() => openImageModal(`http://localhost:8080/Images/${image}`)}
-                      />
+                        className="cursor-pointer text-amber-900 underline mb-2"
+                        onClick={() => openImageModal(image.url)}  // Open modal with URL
+                      >
+                        {image.name}  {/* Display the name */}
+                      </p>
                     ))}
                   </div>
                 </div>
@@ -438,7 +454,7 @@ function InventoryTable() {
               <div className="flex">
                 {/* Primera columna */}
                 <div className="w-1/2 pl-8 pr-8">
-                  <p><strong>UPC:</strong></p>
+                  <p><strong>Número de inventario:</strong></p>
                   <input type="text" value={updateDetails.id || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
                   <p><strong>Serial:</strong></p>
                   <input type="text" value={updateDetails.NSerial || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
@@ -454,7 +470,7 @@ function InventoryTable() {
                   <input type="text" value={updateDetails.Modelo || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
                   <p><strong>Resguardante:</strong></p>
                   <input type="text" value={updateDetails.Resguardante || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
-                  <p><strong>Fecha de Creacion:</strong></p>
+                  <p><strong>Fecha de Creación:</strong></p>
                   <input type="text" value={updateDetails.FechaCreacion || 'Desconocido'} readOnly className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2" />
 
                 </div>
