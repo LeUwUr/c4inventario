@@ -6,7 +6,6 @@ import { BiSolidUser } from 'react-icons/bi';
 import { CgAdd } from 'react-icons/cg';
 import { RxExit } from 'react-icons/rx';
 import { SiMicrosoftexcel } from 'react-icons/si';
-import * as XLSX from 'xlsx';
 import { useLoginContext } from "./LoginContext";
 
 
@@ -116,12 +115,36 @@ function InventoryTable() {
     }
   };
 
-  const downloadExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Articulo');
-    XLSX.writeFile(workbook, 'articulo_data.xlsx');
+  const downloadExcel = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/downloadArtDetailsExcel', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        },
+      });
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'articulo_details.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Error al descargar el archivo Excel:', error);
+    }
   };
+
+
+
+  // const downloadExcel = () => {
+  //   const worksheet = XLSX.utils.json_to_sheet(filteredData);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, 'Articulo');
+  //   XLSX.writeFile(workbook, 'articulo_data.xlsx');
+  // };
 
   const fetchProductDetails = async (productId) => {
     try {
@@ -136,6 +159,7 @@ function InventoryTable() {
           ...selectedItem,
           images: imageUrls,
         });
+
 
         openModal(data.data);
       } else {

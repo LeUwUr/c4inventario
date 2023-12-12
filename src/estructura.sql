@@ -294,3 +294,41 @@ ALTER TABLE `Usr_Art`
 ALTER TABLE `Usuario`
   ADD CONSTRAINT `FK_EstadoUsr` FOREIGN KEY (`Estado`) REFERENCES `Estatus_Usario` (`Numero`),
   ADD CONSTRAINT `FK_Rol` FOREIGN KEY (`Rol`) REFERENCES `Rol` (`Numero`);
+
+  --create the table and add its foreign key to it
+
+create table `Resguardantes` (
+  `Numero` int PRIMARY KEY AUTO_INCREMENT,
+  `Num_Referencia` varchar(30) not null,
+  `Resguardante` varchar(50) not null,
+  `FechaRegistro` timestamp not null
+);
+
+alter table Resguardantes
+ADD FOREIGN KEY FK_ResgArt (Num_Referencia) REFERENCES Articulo (Num_Referencia);
+
+--Trigger to set a resguardante on the "Resguardantes" table once a new row is inserted
+
+DELIMITER $$
+CREATE TRIGGER setResguardante AFTER INSERT ON Articulo FOR EACH ROW
+BEGIN
+    INSERT INTO Resguardantes (Num_Referencia,Resguardante,FechaRegistro)
+    VALUES (NEW.Num_Referencia,NEW.Resguardante, NOW());
+END;
+$$
+DELIMITER ;
+
+--Add the new resguardante to the resguardates table based on the update done to the
+--table "Articulo"
+
+DELIMITER $$
+CREATE TRIGGER updResguardante AFTER UPDATE ON Articulo
+FOR EACH ROW
+BEGIN
+    IF NEW.Resguardante <> OLD.Resguardante THEN
+        INSERT INTO Resguardantes (Num_Referencia, Resguardante, FechaRegistro)
+        VALUES (NEW.Num_Referencia, NEW.Resguardante, NOW());
+    END IF;
+END;
+$$
+DELIMITER ;
