@@ -1,13 +1,30 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const LoginContext = createContext();
 
 export const LoginContextProvider = ({ children }) => {
-    const [userData, setUserData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-      });
+  // Obtener la información almacenada en localStorage al inicio
+  const storedUserData = localStorage.getItem('userData');
+  const initialUserData = storedUserData ? JSON.parse(storedUserData) : {
+    firstName: '',
+    lastName: '',
+    email: '',
+  };
+
+  const [userData, setUserDataState] = useState(initialUserData);
+
+  const setUserData = (data) => {
+    setUserDataState(data);
+    // Almacenar la información en localStorage cada vez que se actualice
+    localStorage.setItem('userData', JSON.stringify(data));
+  };
+
+  useEffect(() => {
+    // Limpiar la información almacenada al cerrar sesión
+    if (!userData.email) {
+      localStorage.removeItem('userData');
+    }
+  }, [userData]);
 
   return (
     <LoginContext.Provider value={{ userData, setUserData }}>
