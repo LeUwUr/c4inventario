@@ -26,7 +26,6 @@ function InventoryTable() {
   const [isUserInfoModalOpen, setUserInfoModalOpen] = useState(false);
   const [ubicaciones, setUbicaciones] = useState([]);
   const [municipios, setMunicipios] = useState([]);
-  const [ubicacionActual, setUbicacionActual] = useState('');
   const [selectedUbicacion, setSelectedUbicacion] = useState('');
   const [selectedMunicipio, setSelectedMunicipio] = useState('');
   const [selectedMotivo, setSelectedMotivo] = useState('');
@@ -239,7 +238,6 @@ function InventoryTable() {
         };
 
         setUpdateDetails(updatedDetails);
-        setUbicacionActual(data.data.Ubicacion);
 
         setSelectedUbicacion(data.data.Ubicacion);
         setSelectedMunicipio(data.data.Municipio);

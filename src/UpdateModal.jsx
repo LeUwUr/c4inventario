@@ -1,11 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const UpdateModal = ({ updateDetails, isUpdateModalOpen, selectedUpdateItem, ubicaciones, municipios, closeUpdateModal, handleUpdate }) => {
 
     const [motivo, setMotivo] = useState('');
     const [ubicacionMunicipioChanged, setUbicacionMunicipioChanged] = useState(false);
-    const [selectedUbicacion, setSelectedUbicacion] = useState('');
-    const [selectedMunicipio, setSelectedMunicipio] = useState('');
+    const [selectedUbicacion, setSelectedUbicacion] = useState(updateDetails.Ubicacion || ''); // Inicializar con el valor actual
+    const [selectedMunicipio, setSelectedMunicipio] = useState(updateDetails.Municipio || ''); // Inicializar con el valor actual
+
+    useEffect(() => {
+        // Restaurar valores cuando la modal se cierra
+        return () => {
+            setSelectedUbicacion(updateDetails.Ubicacion || '');
+            setSelectedMunicipio(updateDetails.Municipio || '');
+            setUbicacionMunicipioChanged(false);
+            setMotivo('');
+        };
+    }, [isUpdateModalOpen, updateDetails]);
+
+    const handleUbicacionChange = (e) => {
+        const newUbicacion = e.target.value;
+        setSelectedUbicacion(newUbicacion);
+        setUbicacionMunicipioChanged(true);
+        setMotivo('');
+    };
+
+    const handleMunicipioChange = (e) => {
+        const newMunicipio = e.target.value;
+        setSelectedMunicipio(newMunicipio);
+        setUbicacionMunicipioChanged(true);
+        setMotivo('');
+    };
 
     return (
         <>
@@ -61,12 +85,8 @@ const UpdateModal = ({ updateDetails, isUpdateModalOpen, selectedUpdateItem, ubi
                             <div className="w-1/3 pr-4">
                                 <p><strong>Ubicación:</strong></p>
                                 <select
-                                    value={updateDetails.Ubicacion || 'Desconocido'}
-                                    onChange={(e) => {
-                                        setSelectedUbicacion(e.target.value);
-                                        setUbicacionMunicipioChanged(true);
-                                        setMotivo('');
-                                    }}
+                                    value={selectedUbicacion}
+                                    onChange={handleUbicacionChange}
                                     className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
                                 >
                                     <option value="" disabled>Seleccione una ubicación</option>
@@ -82,12 +102,8 @@ const UpdateModal = ({ updateDetails, isUpdateModalOpen, selectedUpdateItem, ubi
                             <div className="w-1/3 pl-4">
                                 <p><strong>Municipio:</strong></p>
                                 <select
-                                    value={updateDetails.municipio || 'Desconocido'}
-                                    onChange={(e) => {
-                                        setSelectedMunicipio(e.target.value);
-                                        setUbicacionMunicipioChanged(true);
-                                        setMotivo('');
-                                    }}
+                                    value={selectedMunicipio}
+                                    onChange={handleMunicipioChange}
                                     className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
                                 >
                                     <option value="" disabled>Seleccione un municipio</option>
