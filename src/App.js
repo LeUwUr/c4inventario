@@ -1,14 +1,12 @@
-// App.js
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import 'tailwindcss/tailwind.css';
+import AddItem from './AddItem';
 import './App.css';
-import Navbar from './Navbar';
 import LoginPage from './Login';
+import { LoginContextProvider } from './LoginContext';
 import RegistrationPage from './Registration';
 import InventoryTable from './Table';
-import AddItem from './AddItem';
 import UpdateItem from './UpdateItem';
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import { LoginContextProvider } from './LoginContext';
-
 
 export default function App() {
   return (
@@ -16,13 +14,11 @@ export default function App() {
       <LoginContextProvider>
         <Router>
           <div>
-            <nav>
-              <ul>
-              </ul>
-            </nav>
-            <hr />
-            
             <Routes>
+              <Route
+                path="/"
+                element={<LoginPage />}
+              ></Route>
               <Route
                 path="/login"
                 element={<LoginPage />}

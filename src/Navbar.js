@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {ImArrowLeft} from "react-icons/im";
 
-
 function Navbar({children}) {
   return (
 <nav className="bg-amber-950 p-2 mb-10 text-center w-screen">

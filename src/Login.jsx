@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import 'tailwindcss/tailwind.css';
 import { useLoginContext } from './LoginContext';
-
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,7 +9,6 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const { userData, setUserData } = useLoginContext();
   const navigate = useNavigate();
-
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -55,7 +54,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-50">
+    <div className="flex justify-center items-center h-screen bg-gray-200">
       <form onSubmit={handleSubmit}>
         <div className="w-96 p-8 bg-white shadow-md rounded-lg">
           <div className="flex justify-center">
@@ -134,7 +133,6 @@ function LoginPage() {
             </button>
           </div>
 
-
           {/* Sign Up Link */}
           <div className="text-center">
             <p className="text-sm">
@@ -153,5 +151,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-
-

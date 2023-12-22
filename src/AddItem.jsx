@@ -31,7 +31,6 @@ const AddItem = () => {
     const [municipio, setMunicipios] = useState([]);
     const [resguardante, setResguardante] = useState("");
 
-
     useEffect(() => {
         const storedUserData = localStorage.getItem('userData');
 
@@ -58,11 +57,10 @@ const AddItem = () => {
         fetch("http://localhost:8080/api/municipios")
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
                 setMunicipios(data);
             })
             .catch((error) => console.error("Error al obtener municipios.", error));
-    }, [setUserData]);
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -82,8 +80,6 @@ const AddItem = () => {
             }
         });
     };
-
-
 
     const handleImageChange = (e, index) => {
         const files = e.target.files;
@@ -156,7 +152,7 @@ const AddItem = () => {
                 console.error("Respuesta del servidor:", await response.json());
             } else {
                 // Mostrar una ventana/modal o mensaje al usuario de que se ha agregado correctamente
-                alert("Elemento agregado correctamente");
+                alert("Articulo agregado correctamente");
 
                 // Redirigir al usuario a la página /Table
                 navigate("/inicio");
@@ -240,9 +236,7 @@ const AddItem = () => {
         localStorage.setItem('userData', JSON.stringify(userData));
     }, [userData]);
 
-
     return (
-
         <div className="w-full py-0 max-w-3xl">
             <Navbar>
                 <h1 className="text-2xl mb-1 text-center font-bold text-white">Agregar</h1>
