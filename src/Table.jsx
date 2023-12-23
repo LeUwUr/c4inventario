@@ -28,8 +28,7 @@ function InventoryTable() {
   const [municipios, setMunicipios] = useState([]);
   const [selectedUbicacion, setSelectedUbicacion] = useState('');
   const [selectedMunicipio, setSelectedMunicipio] = useState('');
-  const [selectedMotivo, setSelectedMotivo] = useState('');
-  const [motivo, setMotivo] = useState('');
+  const [comentario, setComentario] = useState('');
   const [ubicacionMunicipioChanged, setUbicacionMunicipioChanged] = useState(false);
   const [updateDetails, setUpdateDetails] = useState({
     Num_Referencia: '',
@@ -51,54 +50,6 @@ function InventoryTable() {
   const { userData } = useLoginContext();
 
   const itemsPerPage = 10;
-
-  const handleUpdate = async () => {
-    try {
-      // Construct the updated details object
-      const updatedDetails = {
-        ...updateDetails,
-        Ubicacion: selectedUbicacion,
-        Municipio: selectedMunicipio,
-        // Add other fields as needed based on your form
-      };
-      // Update the article details using the API endpoint
-      const response = await fetch('http://localhost:8080/api/updItem', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedDetails),
-      });
-
-      const data = await response.json();
-
-      if (data.status === 'SUCCESS') {
-        // Handle success, maybe close the modal or show a success message
-        console.log('Article updated successfully');
-        closeUpdateModal();
-      } else {
-        // Handle failure, maybe show an error message
-        console.error('Failed to update article:', data.error);
-      }
-    } catch (error) {
-      console.error('Error updating article:', error);
-    }
-  };
-
-  // useEffect(() => {
-  //   if (selectedUpdateItem) {
-  //     setUpdateDetails({
-  //       ...selectedUpdateItem,
-  //       Resguardante: selectedUpdateItem.Resguardante,
-  //       Ubicacion: selectedUpdateItem.Ubicacion,
-  //       Marca: selectedUpdateItem.Marca,
-  //       Modelo: selectedUpdateItem.Modelo,
-  //       FechaCreacion: selectedUpdateItem.FechaCreacion,
-  //       Descripcion: selectedUpdateItem.Descripcion,
-  //       // Agrega otros campos según sea necesario
-  //     });
-  //   }
-  // }, [selectedUpdateItem]);
 
   useEffect(() => {
     // Set initial values based on updateDetails
@@ -197,9 +148,9 @@ function InventoryTable() {
       const data = await response.json();
 
       if (data.status === 'SUCCESS') {
-        console.log('Detalles del producto:', data.data);
+        // console.log('Detalles del producto:', data.data);
         const imageUrls = data.data.images.map(image => `http://localhost:8080/images/${image}`);
-        console.log('Rutas de imágenes corregidas:', imageUrls);
+        // console.log('Rutas de imágenes corregidas:', imageUrls);
         setSelectedItem({
           ...selectedItem,
           images: imageUrls,
@@ -266,9 +217,63 @@ function InventoryTable() {
       .catch((error) => console.error(error));
   }, []);
 
+
+  const handleUpdate = async () => {
+    try {
+      // ... (código para obtener datos necesarios)
+
+      const requestBody = {
+        UPC: selectedUpdateItem.Num_Referencia,
+        ubicacion: selectedUbicacion,
+        comentario: ubicacionMunicipioChanged ? comentario : '',
+        municipio: selectedMunicipio,
+        resguardante: `${userData.firstName} ${userData.lastName}`,
+      };
+
+      console.log('Request Body:', requestBody);
+
+      console.log('Request Body:', requestBody);
+      console.log('Ubicacion:', selectedUbicacion);
+      console.log('Comentario:', comentario);
+      console.log('Municipio:', selectedMunicipio);
+
+      const response = await fetch('http://localhost:8080/api/updItem', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      console.log('Response:', response);
+
+      if (response.ok) {
+        // Manejar la respuesta del servidor según tu lógica
+        const result = await response.json();
+        console.log('Result:', result);
+
+        // Muestra una alerta indicando que la actualización fue exitosa
+        window.alert('¡Actualización exitosa!');
+      } else {
+        // Manejar el caso en que la actualización falla
+        console.error('Error al actualizar el artículo');
+
+        // Muestra una alerta indicando que hubo un error
+        window.alert('Hubo un error al actualizar el artículo');
+      }
+
+      // Puedes realizar otras acciones después de la actualización si es necesario
+    } catch (error) {
+      console.error('Error al procesar la actualización', error);
+
+      // Muestra una alerta indicando que hubo un error
+      window.alert('Hubo un error al procesar la actualización');
+    }
+  };
+
   const openModal = async (productDetails) => {
     try {
-      console.log('Selected Item:', productDetails);
+      // console.log('Selected Item:', productDetails);
 
       const imageUrls = productDetails.images.map(image => ({
         name: image,  // Store both name and URL
@@ -294,7 +299,7 @@ function InventoryTable() {
   const closeUpdateModal = () => {
     setUpdateModalOpen(false);
     setUbicacionMunicipioChanged(false);
-    setMotivo('');
+    setComentario('');
   };
 
   const openUserInfoModal = () => {
@@ -433,8 +438,10 @@ function InventoryTable() {
 
         <UpdateModal isUpdateModalOpen={isUpdateModalOpen} updateDetails={updateDetails}
           selectedUpdateItem={selectedUpdateItem} ubicaciones={ubicaciones}
-          municipios={municipios} selectedMunicipio={selectedMunicipio}
-          selectedUbicacion={selectedUbicacion} motivo={motivo}
+          municipios={municipios}
+          // selectedMunicipio={selectedMunicipio}
+          // selectedUbicacion={selectedUbicacion}
+          // comentario={comentario}
           closeUpdateModal={closeUpdateModal}
           handleUpdate={handleUpdate} />
 

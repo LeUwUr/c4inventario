@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 const UpdateModal = ({ updateDetails, isUpdateModalOpen, selectedUpdateItem, ubicaciones, municipios, closeUpdateModal, handleUpdate }) => {
 
-    const [motivo, setMotivo] = useState('');
+    const [comentario, setComentario] = useState('');
     const [ubicacionMunicipioChanged, setUbicacionMunicipioChanged] = useState(false);
     const [selectedUbicacion, setSelectedUbicacion] = useState(updateDetails.Ubicacion || ''); // Inicializar con el valor actual
     const [selectedMunicipio, setSelectedMunicipio] = useState(updateDetails.Municipio || ''); // Inicializar con el valor actual
@@ -13,7 +13,7 @@ const UpdateModal = ({ updateDetails, isUpdateModalOpen, selectedUpdateItem, ubi
             setSelectedUbicacion(updateDetails.Ubicacion || '');
             setSelectedMunicipio(updateDetails.Municipio || '');
             setUbicacionMunicipioChanged(false);
-            setMotivo('');
+            setComentario('');
         };
     }, [isUpdateModalOpen, updateDetails]);
 
@@ -21,15 +21,18 @@ const UpdateModal = ({ updateDetails, isUpdateModalOpen, selectedUpdateItem, ubi
         const newUbicacion = e.target.value;
         setSelectedUbicacion(newUbicacion);
         setUbicacionMunicipioChanged(true);
-        setMotivo('');
+        setComentario('');
+        console.log('Ubicacion:', newUbicacion);
     };
 
     const handleMunicipioChange = (e) => {
         const newMunicipio = e.target.value;
         setSelectedMunicipio(newMunicipio);
         setUbicacionMunicipioChanged(true);
-        setMotivo('');
+        setComentario('');
+        console.log('Municipio:', newMunicipio);
     };
+
 
     return (
         <>
@@ -86,10 +89,11 @@ const UpdateModal = ({ updateDetails, isUpdateModalOpen, selectedUpdateItem, ubi
                                 <p><strong>Ubicación:</strong></p>
                                 <select
                                     value={selectedUbicacion}
+                                    name="ubicacion"
                                     onChange={handleUbicacionChange}
                                     className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
                                 >
-                                    <option value="" disabled>Seleccione una ubicación</option>
+                                    <option value="ubicacion" disabled>Seleccione una ubicación</option>
                                     {ubicaciones.map((ubicacion, index) => (
                                         <option key={index} value={ubicacion.Lugar}>
                                             {ubicacion.Lugar}
@@ -103,10 +107,11 @@ const UpdateModal = ({ updateDetails, isUpdateModalOpen, selectedUpdateItem, ubi
                                 <p><strong>Municipio:</strong></p>
                                 <select
                                     value={selectedMunicipio}
+                                    name="municipio"
                                     onChange={handleMunicipioChange}
                                     className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
                                 >
-                                    <option value="" disabled>Seleccione un municipio</option>
+                                    <option value="municipio" disabled>Seleccione un municipio</option>
                                     {municipios.map((municipio, index) => (
                                         <option key={index} value={municipio.Nombre}>
                                             {municipio.Nombre}
@@ -120,11 +125,12 @@ const UpdateModal = ({ updateDetails, isUpdateModalOpen, selectedUpdateItem, ubi
                             {/* Mostrar el input de motivo solo si la ubicación o el municipio cambió */}
                             {ubicacionMunicipioChanged && (
                                 <div>
-                                    <p><strong>Motivo:</strong></p>
+                                    <p><strong>¿Por qué se está cambiando la ubicación/municipio?:</strong></p>
                                     <input
                                         type="text"
-                                        value={motivo}
-                                        onChange={(e) => setMotivo(e.target.value)}
+                                        value={ubicacionMunicipioChanged ? comentario : ''}  // Cambiado para permitir la escritura
+                                        name="comentario"
+                                        onChange={(e) => setComentario(e.target.value)}
                                         className="w-full border rounded-md border-gray-400 mb-2 px-3 py-2"
                                     />
                                 </div>

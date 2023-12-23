@@ -3,15 +3,16 @@ import { useState } from "react";
 const DetailsModal = ({ isModalOpen, selectedItem, closeModal }) => {
     const [isImageModalOpen, setImageModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
+    
 
     const openImageModal = (image) => {
         setSelectedImage(image);
         setImageModalOpen(true);
-      };
-    
-      const closeImageModal = () => {
+    };
+
+    const closeImageModal = () => {
         setImageModalOpen(false);
-      };
+    };
 
 
     return (
@@ -23,6 +24,7 @@ const DetailsModal = ({ isModalOpen, selectedItem, closeModal }) => {
                     <div className="bg-black bg-opacity-50 absolute inset-0" onClick={closeModal}></div>
                     {/* Modal content */}
                     <div className="bg-white border border-gray-300 rounded-md h-4/5 w-4/6 p-6 relative z-10">
+                
                         {/* Content for the modal */}
                         <h2 className="text-2xl text-center font-bold mt-2 mb-4">Detalles del Artículo</h2>
 

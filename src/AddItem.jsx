@@ -138,7 +138,7 @@ const AddItem = () => {
         console.log("FormData:", formData);
 
         if (!formData.codigo) {
-            alert('Please enter a codigo before submitting.');
+            alert('Por favor ingresa el numero de inventario.');
             return;
         }
 
@@ -152,7 +152,7 @@ const AddItem = () => {
                 console.error("Respuesta del servidor:", await response.json());
             } else {
                 // Mostrar una ventana/modal o mensaje al usuario de que se ha agregado correctamente
-                alert("Articulo agregado correctamente");
+                window.alert("Articulo agregado correctamente");
 
                 // Redirigir al usuario a la página /Table
                 navigate("/inicio");
@@ -183,13 +183,15 @@ const AddItem = () => {
     const handleAddLocation = async () => {
         const newLocation = prompt("Ingrese una nueva ubicación:");
         if (newLocation) {
+            const uppercasedLocation = newLocation.toUpperCase();
+
             try {
                 const response = await fetch("http://localhost:8080/api/setLocation", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ location: newLocation }),
+                    body: JSON.stringify({ location: uppercasedLocation }),
                 });
                 // Manejar la respuesta del servidor según tus necesidades
                 console.log(response);
@@ -245,7 +247,7 @@ const AddItem = () => {
                 <div className="grid grid-cols-3 gap-4 items-center">
                     <div>
                         <label className="block text-xl font-medium text-gray-700 mb-2">
-                            <strong>UPC</strong>
+                            <strong>Número de inventario</strong>
                         </label>
                         <input
                             className="w-full px-3 py-2 border rounded-md"
